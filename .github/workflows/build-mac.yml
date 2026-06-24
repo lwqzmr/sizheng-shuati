@@ -1,0 +1,29 @@
+name: 打包Mac版刷题软件
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-mac:
+    runs-on: macos-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 配置Python环境
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 安装打包依赖
+        run: pip install pyinstaller
+
+      - name: 执行Mac版打包
+        run: pyinstaller -F -w --add-data="question_bank.json:." exam_app.py
+
+      - name: 上传打包产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mac版刷题软件
+          path: dist/exam_app
