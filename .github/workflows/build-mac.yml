@@ -20,10 +20,10 @@ jobs:
         run: pip install pyinstaller
 
       - name: 执行Mac版打包
-        run: pyinstaller -F -w --add-data="question_bank.json:." exam_app.py
+        run: pyinstaller -F -w --add-data="question_bank2.json:." exam_app2.py
 
       - name: 上传打包产物
         uses: actions/upload-artifact@v4
         with:
           name: Mac版刷题软件
-          path: dist/exam_app
+          path: dist/exam_app2
