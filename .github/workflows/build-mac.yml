@@ -1,10 +1,36 @@
-name: 打包Mac版刷题软件
+name: 双平台刷题软件打包
 on:
   push:
     branches: [ main ]
   workflow_dispatch:
 
 jobs:
+  # ========== Windows 版打包 ==========
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 配置Python环境
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 安装打包依赖
+        run: pip install pyinstaller
+
+      - name: 执行Windows版打包
+        # 注意：Windows 下 --add-data 用分号 ; 分隔，Mac 用冒号 :
+        run: pyinstaller -F -w --add-data="question_bank2.json;." exam_app2.py
+
+      - name: 上传Windows产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: Windows版刷题软件
+          path: dist/exam_app2.exe
+
+  # ========== Mac 版打包 ==========
   build-mac:
     runs-on: macos-latest
     steps:
@@ -22,7 +48,7 @@ jobs:
       - name: 执行Mac版打包
         run: pyinstaller -F -w --add-data="question_bank2.json:." exam_app2.py
 
-      - name: 上传打包产物
+      - name: 上传Mac产物
         uses: actions/upload-artifact@v4
         with:
           name: Mac版刷题软件
